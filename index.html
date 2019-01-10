@@ -16,13 +16,17 @@
 				<!-- Header -->
 					<header id="header">
 						<h1>Tudor Popa</h1>
-						<p>Passionate about software engineering with a strong emphasis on software architecture and artificial intelligence.<br/>I'm currently driving the development of a sports betting / online gambling white label PaaS.</p>
+						<p>
+							Passionate about software engineering with a strong emphasis on software architecture and artificial intelligence.
+							<br/><br/>
+							I'm currently driving the development of a sports betting / online gambling white label PaaS.
+						</p>
 						<nav>
 							<ul>
 								<li><a href="https://facebook.com/tudorpopa" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
-								<li><a href="https://github.com/doidor" class="icon fa-github"><span class="label">Github</span></a></li>
-								<li><a href="mailto:tdr.popa@gmail.com" class="icon fa-envelope-o"><span class="label">Email</span></a></li>
+								<li><a href="https://github.com/doidor" class="icon fa-github"><span class="label">Github</span></a></li>								
 								<li><a href="https://www.linkedin.com/in/tdrpopa/" class="icon fa-linkedin"><span class="label">LinkedIn</span></a></li>
+								<li><a href="mailto:tdr.popa@gmail.com" class="icon fa-envelope-o"><span class="label">Email</span></a></li>								
 							</ul>
 						</nav>
 					</header>
@@ -35,7 +39,14 @@
 			</div>
 		</div>
 		<script>
-			window.onload = function() { document.body.classList.remove('is-preload'); }
+			const BG_COLORS = ["#302b63", "#4286f4", "#373B44", "#4A00E0", "#2ebf91", "#8360c3", "#43C6AC", "#516395"];
+
+			window.onload = function() { 
+				document.body.classList.remove('is-preload'); 
+				const bg = document.querySelector("#bg");
+				bg.style.background = BG_COLORS[Math.floor(Math.random() * BG_COLORS.length)];
+			}
+
 			window.ontouchmove = function() { return false; }
 			window.onorientationchange = function() { document.body.scrollTop = 0; }
 		</script>
