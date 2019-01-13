@@ -43,7 +43,7 @@
 			</footer>
 
 		</div>
-	</div>
+	</div>	
 	<script>
 		const BG_COLORS = ["#302b63", "#4286f4", "#373B44", "#4A00E0", "#2ebf91", "#8360c3", "#43C6AC", "#516395"];
 
@@ -59,11 +59,16 @@
 			link.href = `/assets/ico/favicon_${currentColor}.ico`;
 
 			document.getElementsByTagName('head')[0].appendChild(link);
+
+			window.currentColor = currentColor;
+
+			consoleMessage();
 		}
 
 		window.ontouchmove = function () { return false; }
 		window.onorientationchange = function () { document.body.scrollTop = 0; }
-	</script>
+	</script>	
+	<script src="assets/js/extra.js"></script>
 </body>
 
 </html>
