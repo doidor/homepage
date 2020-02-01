@@ -8,6 +8,7 @@ image:
   repository: registry.gitlab.com/tdr.popa/homepage
   pullPolicy: IfNotPresent
   registrySecret: regcred
+  version: latest
 
 imagePullSecrets: []
 nameOverride: ""
