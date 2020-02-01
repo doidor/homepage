@@ -1,0 +1,9 @@
+version: "3"
+
+services:
+  frontend:
+    image: registry.gitlab.com/tdr.popa/homepage:latest
+    ports:
+      - "80:5000"
+    labels:
+      kompose.service.type: LoadBalancer
