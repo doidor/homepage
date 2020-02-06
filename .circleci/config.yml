@@ -33,11 +33,10 @@ jobs:
       - run:
           name: Add Helm repo
           command: helm repo add stable https://kubernetes-charts.storage.googleapis.com/
-          
-      - helm/install-helm-chart:
-          chart: ./chart
-          release-name: homepage
-          values-to-override: image.version=armv$CIRCLE_BUILD_NUM
+
+      - run:
+          name: Install Helm chart
+          command: helm install homepage ./chart --set image.version=armv$CIRCLE_BUILD_NUM
 
 orbs:
   kube-orb: circleci/kubernetes@0.11.0
