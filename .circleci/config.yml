@@ -6,6 +6,7 @@ jobs:
       - checkout
       - kube-orb/install-kubeconfig:
           kubeconfig: KUBECONFIG_DATA
+      - helm/install-helm-on-cluster
 
       - run:
           name: Building based image.
