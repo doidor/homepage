@@ -8,6 +8,8 @@ jobs:
       - kube-orb/install-kubeconfig:
           kubeconfig: KUBECONFIG_DATA
 
+      - kube-orb/install-kubectl
+
       - helm/install-helm-on-cluster:
           enable-cluster-wide-admin-access: true
 
