@@ -6,7 +6,7 @@ jobs:
       - checkout
       - kube-orb/install
       - kube-orb/install-kubeconfig:
-          kubeconfig: $KUBECONFIG_DATA
+          kubeconfig: KUBECONFIG_DATA
 
       - run:
           name: Building based image.
