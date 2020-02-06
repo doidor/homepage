@@ -1,4 +1,4 @@
 #!/bin/bash
 ENVIRON=`uname -a`
 
-echo "ENVIRON=$ENVIRON"
+echo "ENVIRON='$ENVIRON'"
