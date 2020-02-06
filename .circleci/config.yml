@@ -4,9 +4,12 @@ jobs:
     machine: true
     steps:
       - checkout
+      
       - kube-orb/install-kubeconfig:
           kubeconfig: KUBECONFIG_DATA
-      - helm/install-helm-on-cluster
+
+      - helm/install-helm-on-cluster:
+          enable-cluster-wide-admin-access: true
 
       - run:
           name: Building based image.
