@@ -1,5 +1,5 @@
 # Stage 1 - the build process
-FROM nginx:arm64v8
+FROM arm64v8/nginx
 
 COPY assets /usr/share/nginx/html/assets
 COPY index.html /usr/share/nginx/html
