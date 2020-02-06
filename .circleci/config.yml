@@ -9,7 +9,10 @@ jobs:
           kubeconfig: KUBECONFIG_DATA
 
       - kube-orb/install-kubectl
-      
+
+      - helm/install-helm-client:
+          version: v3.0.2
+
       - run:
           name: Building based image.
           command: docker build -f Dockerfile -t $DOCKER_REGISTRY/$DOCKER_USER/homepage:v$CIRCLE_BUILD_NUM .
