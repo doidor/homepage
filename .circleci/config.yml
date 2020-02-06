@@ -9,20 +9,16 @@ jobs:
           name: Building based image.
           command: docker build -f Dockerfile -t $DOCKER_REGISTRY/$DOCKER_USER/homepage .
       - run:
-          name: Listing built images
-          command: docker images
+          name: Building ARM based image.
+          command: docker build -f Dockerfile.arm64v8 -t $DOCKER_REGISTRY/$DOCKER_USER/homepage:arm .
+
       - run:
           name: Docker registry login
           command: docker login $DOCKER_REGISTRY -u $DOCKER_USER -p $DOCKER_PASS
+
       - run:
           name: Docker registry push
           command: docker push $DOCKER_REGISTRY/$DOCKER_USER/homepage
-      - run:
-          name: Building arm based image.
-          command: docker build -f Dockerfile.arm64v8 -t $DOCKER_REGISTRY/$DOCKER_USER/homepage:arm .
-      - run:
-          name: Docker registry login
-          command: docker login $DOCKER_REGISTRY -u $DOCKER_USER -p $DOCKER_PASS
       - run:
           name: Docker registry push
           command: docker push $DOCKER_REGISTRY/$DOCKER_USER/homepage:arm
