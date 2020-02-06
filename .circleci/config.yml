@@ -1,9 +1,12 @@
-version: 2
+version: 2.1
 jobs:
   build:
     machine: true
     steps:
       - checkout
+      - kube-orb/install
+      - kube-orb/install-kubeconfig:
+          kubeconfig: $KUBECONFIG_DATA
 
       - run:
           name: Building based image.
@@ -21,3 +24,5 @@ jobs:
           command: |
             docker push $DOCKER_REGISTRY/$DOCKER_USER/homepage:v$CIRCLE_BUILD_NUM
             docker push $DOCKER_REGISTRY/$DOCKER_USER/homepage:armv$CIRCLE_BUILD_NUM
+orbs:
+  kube-orb: circleci/kubernetes@0.11.0
