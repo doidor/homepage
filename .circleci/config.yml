@@ -1,6 +1,8 @@
 version: 2
 jobs:
   build:
+    environment:
+      DOCKER_IMAGE: $DOCKER_REGISTRY/$DOCKER_USER/homepage:arm
     machine: true
     steps:
       - checkout
@@ -10,10 +12,16 @@ jobs:
           command: docker run --rm --privileged multiarch/qemu-user-static:register --reset
       - run:
           name: Building arm based image.
-          command: docker build -t arm-test .
+          command: docker build -t $DOCKER_IMAGE .
       - run:
           name: Listing built images
           command: docker images
       - run:
           name: Running arm based image.
           command: docker run --rm arm-test
+      - run:
+          name: Docker registry login
+          command: docker login $DOCKER_REGISTRY -u $DOCKER_USER -p $DOCKER_PASS
+      - run:
+          name: Docker registry push
+          command: docker push $DOCKER_IMAGE
