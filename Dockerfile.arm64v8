@@ -1,8 +1,7 @@
 # Stage 1 - the build process
 FROM arm64v8/nginx
 
-COPY ./env.sh /
-RUN /env.sh
+RUN ./project/env.sh
 
 COPY assets /usr/share/nginx/html/assets
 COPY index.html /usr/share/nginx/html
