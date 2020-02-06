@@ -7,7 +7,7 @@ jobs:
 
       - run:
           name: Enabling qemu
-          command: docker run --rm --privileged multiarch/qemu-user-static:arm
+          command: docker run --rm --privileged multiarch/qemu-user-static:register --reset
       - run:
           name: Building arm based image.
           command: docker build -t $DOCKER_REGISTRY/$DOCKER_USER/homepage:arm .
