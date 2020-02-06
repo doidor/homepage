@@ -4,7 +4,6 @@ jobs:
     machine: true
     steps:
       - checkout
-      - kube-orb/install
       - kube-orb/install-kubeconfig:
           kubeconfig: KUBECONFIG_DATA
 
@@ -24,5 +23,12 @@ jobs:
           command: |
             docker push $DOCKER_REGISTRY/$DOCKER_USER/homepage:v$CIRCLE_BUILD_NUM
             docker push $DOCKER_REGISTRY/$DOCKER_USER/homepage:armv$CIRCLE_BUILD_NUM
+
+      - helm/install-helm-chart:
+          chart: ./chart
+          release-name: homepage
+          values-to-override: image.version=armv$CIRCLE_BUILD_NUM
+
 orbs:
   kube-orb: circleci/kubernetes@0.11.0
+  helm: circleci/helm@0.2.3
