@@ -1,9 +1,8 @@
 # Stage 1 - the build process
 FROM arm64v8/nginx
 
+RUN ls
 COPY assets /usr/share/nginx/html/assets
-COPY index.html /usr/share/nginx/html
-
-RUN echo "ENVIRON='arm64'" > /usr/share/nginx/html/assets/js/env.js
+COPY index.html /usr/share/nginx/html1
 
 CMD ["nginx", "-g", "daemon off;"]
