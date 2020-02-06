@@ -2,7 +2,7 @@
 FROM arm64v8/nginx
 
 COPY ./env.sh /
-RUN /env.sh > ./project/assets/js/env.js
+RUN /env.sh
 
 COPY assets /usr/share/nginx/html/assets
 COPY index.html /usr/share/nginx/html
