@@ -30,6 +30,10 @@ jobs:
             docker push $DOCKER_REGISTRY/$DOCKER_USER/homepage:v$CIRCLE_BUILD_NUM
             docker push $DOCKER_REGISTRY/$DOCKER_USER/homepage:armv$CIRCLE_BUILD_NUM
 
+      - run:
+          name: Add Helm repo
+          command: helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+          
       - helm/install-helm-chart:
           chart: ./chart
           release-name: homepage
