@@ -3,6 +3,6 @@ FROM arm64v8/nginx
 
 RUN ls
 COPY assets /usr/share/nginx/html/assets
-COPY index.html /usr/share/nginx/html1
+COPY index.html /usr/share/nginx/html
 
 CMD ["nginx", "-g", "daemon off;"]
