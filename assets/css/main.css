@@ -1,5 +1,4 @@
 @import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,900");
-@import url("font-awesome.min.css");
 
 /*
 	Aerial by HTML5 UP
@@ -711,10 +710,10 @@ a:hover {
 }
 
 #header nav li:nth-child(6) {
-  -moz-animation-delay: 3.75s;
-  -webkit-animation-delay: 3.75s;
-  -ms-animation-delay: 3.75s;
-  animation-delay: 3.75s;
+  -moz-animation-delay: 1.75s;
+  -webkit-animation-delay: 1.75s;
+  -ms-animation-delay: 1.75s;
+  animation-delay: 1.75s;
 }
 
 #header nav li:nth-child(7) {
