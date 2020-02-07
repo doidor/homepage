@@ -40,11 +40,11 @@ service:
 ingress:
   enabled: true
   annotations:
-    {}
-    # kubernetes.io/ingress.class: nginx
+    { kubernetes.io/ingress.class: nginx }
+    #
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: tudorpopa.5.2.198.117.nip.io
+    - host: tudorpopa.com
       paths: ["/"]
   tls: []
   #  - secretName: chart-example-tls
