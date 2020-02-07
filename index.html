@@ -102,10 +102,11 @@
 
         <!-- Footer -->
         <footer id="footer">
-          <span class="copyright"
-            >&copy; Tudor Popa. Design:
-            <a href="http://html5up.net">HTML5 UP</a>.</span
-          >
+          <span class="copyright">
+            &copy; Tudor Popa. Design:
+            <a href="http://html5up.net">HTML5 UP</a>.
+          </span>
+          <span id="version"></span>
         </footer>
       </div>
     </div>
@@ -155,6 +156,15 @@
       window.onorientationchange = function() {
         document.body.scrollTop = 0;
       };
+
+      fetch("package.json")
+        .then(data => data.json())
+        .then(packageData => {
+          document.querySelector(
+            "#version"
+          ).textContent = `v${packageData.version}`;
+        })
+        .catch(e => {});
     </script>
     <script src="assets/js/extra.js"></script>
     <script src="assets/js/env.js"></script>

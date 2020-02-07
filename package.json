@@ -7,11 +7,12 @@
   "license": "MIT",
   "devDependencies": {
     "git-branch-is": "^3.1.0",
+    "html-version": "^1.1.2",
     "husky": "^4.2.1"
   },
   "husky": {
     "hooks": {
-      "pre-push": "if git-branch-is master; then yarn version --patch; fi"
+      "pre-push": "yarn version --patch"
     }
   }
 }
