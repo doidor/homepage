@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/doidor/homepage/tree/master.svg?style=svg)](https://circleci.com/gh/doidor/homepage/tree/master)
+
 # Personal webpage
 
 This is my personal webpage where you can find information about myself (resume, social links, etc).
