@@ -1,10 +1,13 @@
 version: 2.1
 jobs:
   build:
+    branches:
+      only:
+        - master
     machine: true
     steps:
       - checkout
-      
+
       - kube-orb/install-kubeconfig:
           kubeconfig: KUBECONFIG_DATA
 
