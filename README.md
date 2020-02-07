@@ -6,4 +6,6 @@ This is my personal webpage where you can find information about myself (resume,
 
 This project is deployed on a Raspberry PI Kubernetes cluster using [CircleCI](https://circleci.com/).
 
+You can read about it [in this article](https://medium.com/@tdr.popa/ci-cd-on-a-raspberry-pi-kubernetes-cluster-f8f22610d4eb).
+
 The site uses the Aerial theme by [HTML5 UP](https://html5up.net/).
