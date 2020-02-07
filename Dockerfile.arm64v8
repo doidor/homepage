@@ -2,6 +2,8 @@
 FROM arm64v8/nginx
 
 COPY assets /usr/share/nginx/html/assets
-COPY index_arm.html /usr/share/nginx/html/index.html
+COPY assets/js/env.arm.js /usr/share/nginx/html/assets/js/env.js
+
+COPY index.html /usr/share/nginx/html/index.html
 
 CMD ["nginx", "-g", "daemon off;"]
