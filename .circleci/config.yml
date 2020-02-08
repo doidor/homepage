@@ -1,19 +1,10 @@
 version: 2.1
 jobs:
   build:
-    docker:
-      - image: buildpack-deps:eoan
-
+    machine: true
     steps:
       - checkout
-
-      - setup_remote_docker
-
-      - run:
-          name: Install Docker client
-          command: |
-            curl -fsSL https://get.docker.com | sh
-            
+           
       - run:
           name: Build and push Docker images.
           command: |
@@ -29,9 +20,7 @@ jobs:
             docker push $IMAGE_NAME_ARM
   
   deploy:
-    docker:
-      - image: buildpack-deps:eoan
-
+    machine: true
     steps:
       - checkout
 
