@@ -1,7 +1,9 @@
 version: 2.1
 jobs:
   build:
-    machine: true
+    docker:
+      - image: buildpack-deps:eoan
+
     steps:
       - checkout
 
@@ -24,7 +26,9 @@ jobs:
             docker push $DOCKER_REGISTRY/$DOCKER_USER/homepage:armv$CIRCLE_BUILD_NUM
   
   deploy:
-    machine: true
+    docker:
+      - image: buildpack-deps:eoan
+
     steps:
       - checkout
 
