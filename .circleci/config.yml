@@ -7,7 +7,7 @@ jobs:
     steps:
       - checkout
 
-      - setup_remote_docker:
+      - setup_remote_docker
 
       - run:
           name: Building Docker image.
@@ -34,7 +34,7 @@ jobs:
     steps:
       - checkout
 
-      - setup_remote_docker:
+      - setup_remote_docker
 
       - kube-orb/install-kubeconfig:
           kubeconfig: KUBECONFIG_DATA
