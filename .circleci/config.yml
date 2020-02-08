@@ -8,13 +8,13 @@ jobs:
       - run:
           name: Build and push Docker images.
           command: |
+            echo $DOCKER_PASS | docker login $DOCKER_REGISTRY -u $DOCKER_USER --password-stdin
+
             IMAGE_NAME=$DOCKER_REGISTRY/$DOCKER_USER/homepage:v$CIRCLE_BUILD_NUM
             IMAGE_NAME_ARM=$DOCKER_REGISTRY/$DOCKER_USER/homepage:armv$CIRCLE_BUILD_NUM
 
             docker build -f Dockerfile -t $IMAGE_NAME .
-            docker build -f Dockerfile.arm64v8 -t $IMAGE_NAME_ARM .
-
-            echo $DOCKER_PASS | docker login -u $DOCKER_REGISTRY $DOCKER_USER --password-stdin
+            docker build -f Dockerfile.arm64v8 -t $IMAGE_NAME_ARM .            
 
             docker push $IMAGE_NAME
             docker push $IMAGE_NAME_ARM
