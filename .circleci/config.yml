@@ -8,7 +8,6 @@ jobs:
       - checkout
 
       - setup_remote_docker:
-          docker_layer_caching: true
 
       - run:
           name: Building Docker image.
@@ -36,7 +35,6 @@ jobs:
       - checkout
 
       - setup_remote_docker:
-          docker_layer_caching: true
 
       - kube-orb/install-kubeconfig:
           kubeconfig: KUBECONFIG_DATA
