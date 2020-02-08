@@ -1,17 +1,9 @@
 version: 2.1
 jobs:
-  build-production:
+  build:
     machine: true
     steps:
       - checkout
-
-      - kube-orb/install-kubeconfig:
-          kubeconfig: KUBECONFIG_DATA
-
-      - kube-orb/install-kubectl
-
-      - helm/install-helm-client:
-          version: v3.0.2
 
       - run:
           name: Building Docker image.
@@ -30,6 +22,19 @@ jobs:
           command: |
             docker push $DOCKER_REGISTRY/$DOCKER_USER/homepage:v$CIRCLE_BUILD_NUM
             docker push $DOCKER_REGISTRY/$DOCKER_USER/homepage:armv$CIRCLE_BUILD_NUM
+  
+  deploy:
+    machine: true
+    steps:
+      - checkout
+
+      - kube-orb/install-kubeconfig:
+          kubeconfig: KUBECONFIG_DATA
+
+      - kube-orb/install-kubectl
+
+      - helm/install-helm-client:
+          version: v3.0.2
 
       - run:
           name: Add Helm repo
@@ -43,7 +48,13 @@ workflows:
   version: 2
   build-production-and-deploy:
     jobs:
-      - build-production:
+      - build:
+          filters:
+            branches:
+              only:
+                - master
+
+      - deploy:
           filters:
             branches:
               only:
