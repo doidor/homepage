@@ -7,6 +7,9 @@ jobs:
     steps:
       - checkout
 
+      - setup_remote_docker:
+          docker_layer_caching: true
+
       - run:
           name: Building Docker image.
           command: docker build -f Dockerfile -t $DOCKER_REGISTRY/$DOCKER_USER/homepage:v$CIRCLE_BUILD_NUM .
@@ -31,6 +34,9 @@ jobs:
 
     steps:
       - checkout
+
+      - setup_remote_docker:
+          docker_layer_caching: true
 
       - kube-orb/install-kubeconfig:
           kubeconfig: KUBECONFIG_DATA
