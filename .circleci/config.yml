@@ -4,21 +4,21 @@ jobs:
     machine: true
     steps:
       - checkout
-           
+
       - run:
           name: Build and push Docker images.
           command: |
             echo $DOCKER_PASS | docker login $DOCKER_REGISTRY -u $DOCKER_USER --password-stdin
 
-            IMAGE_NAME=$DOCKER_REGISTRY/$DOCKER_USER/homepage:v$CIRCLE_BUILD_NUM
-            IMAGE_NAME_ARM=$DOCKER_REGISTRY/$DOCKER_USER/homepage:armv$CIRCLE_BUILD_NUM
+            IMAGE_NAME=$DOCKER_REGISTRY/$DOCKER_USER/homepage:v$CIRCLE_WORKFLOW_ID
+            IMAGE_NAME_ARM=$DOCKER_REGISTRY/$DOCKER_USER/homepage:armv$CIRCLE_WORKFLOW_ID
 
             docker build -f Dockerfile -t $IMAGE_NAME .
-            docker build -f Dockerfile.arm64v8 -t $IMAGE_NAME_ARM .            
+            docker build -f Dockerfile.arm64v8 -t $IMAGE_NAME_ARM .
 
             docker push $IMAGE_NAME
             docker push $IMAGE_NAME_ARM
-  
+
   deploy:
     machine: true
     steps:
@@ -38,7 +38,7 @@ jobs:
 
       - run:
           name: Install Helm chart
-          command: helm upgrade homepage ./chart --set image.version=armv$CIRCLE_BUILD_NUM --install
+          command: helm upgrade homepage ./chart --set image.version=armv$CIRCLE_WORKFLOW_ID --install
 
 workflows:
   version: 2
@@ -51,7 +51,7 @@ workflows:
                 - master
 
       - deploy:
-          requires: 
+          requires:
             - build
           filters:
             branches:
