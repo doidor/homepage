@@ -1,6 +1,6 @@
 version: 2.1
 commands:
-  buildAndPublishDockerImage:
+  build-publish-docker-image:
     description: "A set of commands to build and publish a Docker image to a specific Docker repo."
     parameters:
       pass:
@@ -41,7 +41,7 @@ jobs:
     steps:
       - checkout
 
-      - buildAndPublishDockerImage:
+      - build-publish-docker-image:
           pass: $DOCKER_PASS
           user: $DOCKER_USER
           registry: $DOCKER_REGISTRY
