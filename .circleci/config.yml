@@ -1,6 +1,6 @@
 version: 2.1
 jobs:
-  build:
+  build-staging:
     machine: true
     steps:
       - checkout
@@ -10,8 +10,8 @@ jobs:
           command: |
             echo $DOCKER_PASS | docker login $DOCKER_REGISTRY -u $DOCKER_USER --password-stdin
 
-            IMAGE_NAME=$DOCKER_REGISTRY/$DOCKER_USER/homepage:v$CIRCLE_WORKFLOW_ID
-            IMAGE_NAME_ARM=$DOCKER_REGISTRY/$DOCKER_USER/homepage:armv$CIRCLE_WORKFLOW_ID
+            IMAGE_NAME=$DOCKER_REGISTRY/$DOCKER_USER/homepage:staging-v$CIRCLE_WORKFLOW_ID
+            IMAGE_NAME_ARM=$DOCKER_REGISTRY/$DOCKER_USER/homepage:arm-staging-v$CIRCLE_WORKFLOW_ID
 
             docker build -f Dockerfile -t $IMAGE_NAME .
             docker build -f Dockerfile.arm64v8 -t $IMAGE_NAME_ARM .
@@ -19,7 +19,7 @@ jobs:
             docker push $IMAGE_NAME
             docker push $IMAGE_NAME_ARM
 
-  deploy:
+  deploy-staging:
     machine: true
     steps:
       - checkout
@@ -38,19 +38,85 @@ jobs:
 
       - run:
           name: Install Helm chart
-          command: helm upgrade homepage ./chart --set image.version=armv$CIRCLE_WORKFLOW_ID --install
+          command: |
+            IMAGE_VERSION=arm-staging-v$CIRCLE_WORKFLOW_ID
+            FULLNAME=homepage-staging
+
+            helm upgrade homepage ./chart \
+              --set fullnameOverride=$FULLNAME \
+              --set image.version=$IMAGE_VERSION \
+              --install
+
+  build-prod:
+    machine: true
+    steps:
+      - checkout
+
+      - run:
+          name: Build and push Docker images.
+          command: |
+            echo $DOCKER_PASS | docker login $DOCKER_REGISTRY -u $DOCKER_USER --password-stdin
+
+            IMAGE_NAME=$DOCKER_REGISTRY/$DOCKER_USER/homepage:v$CIRCLE_WORKFLOW_ID
+            IMAGE_NAME_ARM=$DOCKER_REGISTRY/$DOCKER_USER/homepage:armv$CIRCLE_WORKFLOW_ID
+
+            docker build -f Dockerfile -t $IMAGE_NAME .
+            docker build -f Dockerfile.arm64v8 -t $IMAGE_NAME_ARM .
+
+            docker push $IMAGE_NAME
+            docker push $IMAGE_NAME_ARM
+
+  deploy-prod:
+    machine: true
+    steps:
+      - checkout
+
+      - kube-orb/install-kubeconfig:
+          kubeconfig: KUBECONFIG_DATA
+
+      - kube-orb/install-kubectl
+
+      - helm/install-helm-client:
+          version: v3.0.2
+
+      - run:
+          name: Add Helm repo
+          command: helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+
+      - run:
+          name: Install Helm chart
+          command: |
+            IMAGE_VERSION=armv$CIRCLE_WORKFLOW_ID
+            HOSTNAME=tudorpopa.com
+            HOSTPATH=/
+            FULLNAME=homepage-prod
+
+            helm upgrade homepage ./chart \
+              --set fullnameOverride=$FULLNAME \
+              --set image.version=$IMAGE_VERSION \
+              --set ingress.hosts[0].host=$HOSTNAME \
+              --set ingress.hosts[0].paths[0]=$HOSTPATH \
+              --install
 
 workflows:
   version: 2
+  build-staging-and-deploy:
+    jobs:
+      - build-staging:
+
+      - deploy-staging:
+          requires:
+            - build
+
   build-production-and-deploy:
     jobs:
-      - build:
+      - build-prod:
           filters:
             branches:
               only:
                 - master
 
-      - deploy:
+      - deploy-prod:
           requires:
             - build
           filters:
