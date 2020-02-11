@@ -4,22 +4,22 @@ commands:
     description: "A set of commands to build and publish a Docker image to a specific Docker repo."
     parameters:
       pass:
-        type: String
+        type: string
         default: ""
       user:
-        type: String
+        type: string
         default: ""
       registry:
-        type: String
+        type: string
         default: ""
       imageName:
-        type: String
+        type: string
         default: "homepage"
       imageTag:
-        type: String
+        type: string
         default: ""
       imageTagArm:
-        type: String
+        type: string
         default: ""
     steps:
       name: Build and push Docker images.
