@@ -22,8 +22,6 @@ jobs:
   deploy-staging:
     machine: true
     steps:
-      - checkout
-
       - kube-orb/install-kubeconfig:
           kubeconfig: KUBECONFIG_DATA
 
@@ -40,11 +38,11 @@ jobs:
           name: Install Helm chart
           command: |
             IMAGE_VERSION=arm-staging-v$CIRCLE_WORKFLOW_ID
-            NAME=staging
+            NAMESPACE=homepage-staging
 
             helm upgrade homepage ./chart \
-              --set nameOverride=$NAME \
               --set image.version=$IMAGE_VERSION \
+              --namespace $NAMESPACE \
               --install
 
   build-prod:
@@ -69,8 +67,6 @@ jobs:
   deploy-prod:
     machine: true
     steps:
-      - checkout
-
       - kube-orb/install-kubeconfig:
           kubeconfig: KUBECONFIG_DATA
 
@@ -89,13 +85,13 @@ jobs:
             IMAGE_VERSION=armv$CIRCLE_WORKFLOW_ID
             HOSTNAME=tudorpopa.com
             HOSTPATH=/
-            NAME=prod
+            NAMESPACE=homepage-prod
 
             helm upgrade homepage ./chart \
-              --set nameOverride=$NAME \
               --set image.version=$IMAGE_VERSION \
               --set ingress.hosts[0].host=$HOSTNAME \
               --set ingress.hosts[0].paths[0]=$HOSTPATH \
+              --namespace $NAMESPACE \
               --install
 
 workflows:
