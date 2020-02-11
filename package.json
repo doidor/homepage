@@ -7,7 +7,6 @@
   "license": "MIT",
   "devDependencies": {
     "git-branch-is": "^3.1.0",
-    "html-version": "^1.1.2",
     "husky": "^4.2.1"
   },
   "husky": {
