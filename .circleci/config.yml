@@ -102,11 +102,11 @@ workflows:
   version: 2
   build-staging-and-deploy:
     jobs:
-      - build-staging:
+      - build-staging
 
       - deploy-staging:
           requires:
-            - build
+            - build-staging
 
   build-production-and-deploy:
     jobs:
@@ -118,7 +118,7 @@ workflows:
 
       - deploy-prod:
           requires:
-            - build
+            - build-prod
           filters:
             branches:
               only:
