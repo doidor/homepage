@@ -22,6 +22,8 @@ jobs:
   deploy-staging:
     machine: true
     steps:
+      - checkout
+
       - kube-orb/install-kubeconfig:
           kubeconfig: KUBECONFIG_DATA
 
@@ -67,6 +69,8 @@ jobs:
   deploy-prod:
     machine: true
     steps:
+      - checkout
+
       - kube-orb/install-kubeconfig:
           kubeconfig: KUBECONFIG_DATA
 
@@ -98,11 +102,19 @@ workflows:
   version: 2
   build-staging-and-deploy:
     jobs:
-      - build-staging
+      - build-staging:
+          filters:
+            branches:
+              ignore:
+                - master
 
       - deploy-staging:
           requires:
             - build-staging
+          filters:
+            branches:
+              ignore:
+                - master
 
   build-production-and-deploy:
     jobs:
