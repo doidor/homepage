@@ -40,7 +40,7 @@ jobs:
           name: Install Helm chart
           command: |
             IMAGE_VERSION=arm-staging-v$CIRCLE_WORKFLOW_ID
-            NAME=homepage-staging
+            NAME=staging
 
             helm upgrade homepage ./chart \
               --set nameOverride=$NAME \
@@ -89,7 +89,7 @@ jobs:
             IMAGE_VERSION=armv$CIRCLE_WORKFLOW_ID
             HOSTNAME=tudorpopa.com
             HOSTPATH=/
-            NAME=homepage-prod
+            NAME=prod
 
             helm upgrade homepage ./chart \
               --set nameOverride=$NAME \
