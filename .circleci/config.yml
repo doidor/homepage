@@ -22,18 +22,19 @@ commands:
         type: string
         default: ""
     steps:
-      name: Build and push Docker images.
-      command: |
-        echo << parameters.pass >> | docker login << parameters.registry >> -u << parameters.user >> --password-stdin
+      - run:
+          name: Build and push Docker images.
+          command: |
+            echo << parameters.pass >> | docker login << parameters.registry >> -u << parameters.user >> --password-stdin
 
-        IMAGE_NAME=<< parameters.registry >>/<< parameters.user >>/<< parameters.imageName >>:<< parameters.imageTag >>
-        IMAGE_NAME_ARM=<< parameters.registry >>/<< parameters.user >>/<< parameters.imageName >>:<< parameters.imageTagArm >>
+            IMAGE_NAME=<< parameters.registry >>/<< parameters.user >>/<< parameters.imageName >>:<< parameters.imageTag >>
+            IMAGE_NAME_ARM=<< parameters.registry >>/<< parameters.user >>/<< parameters.imageName >>:<< parameters.imageTagArm >>
 
-        docker build -f Dockerfile -t $IMAGE_NAME .
-        docker build -f Dockerfile.arm64v8 -t $IMAGE_NAME_ARM .
+            docker build -f Dockerfile -t $IMAGE_NAME .
+            docker build -f Dockerfile.arm64v8 -t $IMAGE_NAME_ARM .
 
-        docker push $IMAGE_NAME
-        docker push $IMAGE_NAME_ARM
+            docker push $IMAGE_NAME
+            docker push $IMAGE_NAME_ARM
 
 jobs:
   build-staging:
