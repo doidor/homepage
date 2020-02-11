@@ -1,23 +1,53 @@
 version: 2.1
+commands:
+  buildAndPublishDockerImage:
+    description: "A set of commands to build and publish a Docker image to a specific Docker repo."
+    parameters:
+      pass:
+        type: String
+        default: ""
+      user:
+        type: String
+        default: ""
+      registry:
+        type: String
+        default: ""
+      imageName:
+        type: String
+        default: "homepage"
+      imageTag:
+        type: String
+        default: ""
+      imageTagArm:
+        type: String
+        default: ""
+    steps:
+      name: Build and push Docker images.
+      command: |
+        echo << parameters.pass >> | docker login << parameters.registry >> -u << parameters.user >> --password-stdin
+
+        IMAGE_NAME=<< parameters.registry >>/<< parameters.user >>/<< parameters.imageName >>:<< parameters.imageTag >>
+        IMAGE_NAME_ARM=<< parameters.registry >>/<< parameters.user >>/<< parameters.imageName >>:<< parameters.imageTagArm >>
+
+        docker build -f Dockerfile -t $IMAGE_NAME .
+        docker build -f Dockerfile.arm64v8 -t $IMAGE_NAME_ARM .
+
+        docker push $IMAGE_NAME
+        docker push $IMAGE_NAME_ARM
+
 jobs:
   build-staging:
     machine: true
     steps:
       - checkout
 
-      - run:
-          name: Build and push Docker images.
-          command: |
-            echo $DOCKER_PASS | docker login $DOCKER_REGISTRY -u $DOCKER_USER --password-stdin
-
-            IMAGE_NAME=$DOCKER_REGISTRY/$DOCKER_USER/homepage:staging-v$CIRCLE_WORKFLOW_ID
-            IMAGE_NAME_ARM=$DOCKER_REGISTRY/$DOCKER_USER/homepage:arm-staging-v$CIRCLE_WORKFLOW_ID
-
-            docker build -f Dockerfile -t $IMAGE_NAME .
-            docker build -f Dockerfile.arm64v8 -t $IMAGE_NAME_ARM .
-
-            docker push $IMAGE_NAME
-            docker push $IMAGE_NAME_ARM
+      - buildAndPublishDockerImage:
+          pass: $DOCKER_PASS
+          user: $DOCKER_USER
+          registry: $DOCKER_REGISTRY
+          imageName: "homepage"
+          imageTag: staging-v$CIRCLE_WORKFLOW_ID
+          imageTagArm: arm-staging-v$CIRCLE_WORKFLOW_ID
 
   deploy-staging:
     machine: true
