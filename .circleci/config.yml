@@ -1,102 +1,126 @@
 version: 2.1
+commands:
+  build-publish-docker-image:
+    description: "A set of commands to build and publish a Docker image to a specific Docker repo."
+    parameters:
+      pass:
+        type: string
+        default: ""
+      user:
+        type: string
+        default: ""
+      registry:
+        type: string
+        default: ""
+      imageName:
+        type: string
+        default: "homepage"
+      imageTag:
+        type: string
+        default: ""
+      imageTagArm:
+        type: string
+        default: ""
+    steps:
+      - checkout
+
+      - run:
+          name: Build and push Docker images.
+          command: |
+            echo << parameters.pass >> | docker login << parameters.registry >> -u << parameters.user >> --password-stdin
+
+            IMAGE_NAME=<< parameters.registry >>/<< parameters.user >>/<< parameters.imageName >>:<< parameters.imageTag >>
+            IMAGE_NAME_ARM=<< parameters.registry >>/<< parameters.user >>/<< parameters.imageName >>:<< parameters.imageTagArm >>
+
+            docker build -f Dockerfile -t $IMAGE_NAME .
+            docker build -f Dockerfile.arm64v8 -t $IMAGE_NAME_ARM .
+
+            docker push $IMAGE_NAME
+            docker push $IMAGE_NAME_ARM
+
+  deploy-app:
+    description: "A set of commands to deploy a new version of the app using Helm."
+    parameters:
+      imageTag:
+        type: string
+        default: ""
+      namespace:
+        type: string
+        default: ""
+      hostname:
+        type: string
+        default: "arm.tudorpopa.com"
+      hostpath:
+        type: string
+        default: "/"
+      appName:
+        type: string
+        default: "homepage"
+      kubeconfigData:
+        type: string
+        default: "KUBECONFIG_DATA"
+    steps:
+      - checkout
+
+      - kube-orb/install-kubeconfig:
+          kubeconfig: << parameters.kubeconfigData >>
+
+      - kube-orb/install-kubectl
+
+      - helm/install-helm-client:
+          version: v3.0.2
+
+      - run:
+          name: Add Helm repo
+          command: helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+
+      - run:
+          name: Deploy the image.
+          command: |
+            helm upgrade << parameters.appName >> ./chart \
+              --set image.version=<< parameters.imageTag >> \
+              --set ingress.hosts[0].host=<< parameters.hostname >> \
+              --set ingress.hosts[0].paths[0]=<< parameters.hostpath >> \
+              --namespace << parameters.namespace >> \
+              --install
+
 jobs:
   build-staging:
     machine: true
     steps:
-      - checkout
-
-      - run:
-          name: Build and push Docker images.
-          command: |
-            echo $DOCKER_PASS | docker login $DOCKER_REGISTRY -u $DOCKER_USER --password-stdin
-
-            IMAGE_NAME=$DOCKER_REGISTRY/$DOCKER_USER/homepage:staging-v$CIRCLE_WORKFLOW_ID
-            IMAGE_NAME_ARM=$DOCKER_REGISTRY/$DOCKER_USER/homepage:arm-staging-v$CIRCLE_WORKFLOW_ID
-
-            docker build -f Dockerfile -t $IMAGE_NAME .
-            docker build -f Dockerfile.arm64v8 -t $IMAGE_NAME_ARM .
-
-            docker push $IMAGE_NAME
-            docker push $IMAGE_NAME_ARM
+      - build-publish-docker-image:
+          pass: $DOCKER_PASS
+          user: $DOCKER_USER
+          registry: $DOCKER_REGISTRY
+          imageName: "homepage"
+          imageTag: staging-v$CIRCLE_WORKFLOW_ID
+          imageTagArm: arm-staging-v$CIRCLE_WORKFLOW_ID
 
   deploy-staging:
     machine: true
     steps:
-      - checkout
-
-      - kube-orb/install-kubeconfig:
-          kubeconfig: KUBECONFIG_DATA
-
-      - kube-orb/install-kubectl
-
-      - helm/install-helm-client:
-          version: v3.0.2
-
-      - run:
-          name: Add Helm repo
-          command: helm repo add stable https://kubernetes-charts.storage.googleapis.com/
-
-      - run:
-          name: Install Helm chart
-          command: |
-            IMAGE_VERSION=arm-staging-v$CIRCLE_WORKFLOW_ID
-            NAMESPACE=homepage-staging
-
-            helm upgrade homepage ./chart \
-              --set image.version=$IMAGE_VERSION \
-              --namespace $NAMESPACE \
-              --install
+      - deploy-app:
+          imageTag: "arm-staging-v$CIRCLE_WORKFLOW_ID"
+          namespace: "homepage-staging"
 
   build-prod:
     machine: true
     steps:
-      - checkout
-
-      - run:
-          name: Build and push Docker images.
-          command: |
-            echo $DOCKER_PASS | docker login $DOCKER_REGISTRY -u $DOCKER_USER --password-stdin
-
-            IMAGE_NAME=$DOCKER_REGISTRY/$DOCKER_USER/homepage:v$CIRCLE_WORKFLOW_ID
-            IMAGE_NAME_ARM=$DOCKER_REGISTRY/$DOCKER_USER/homepage:armv$CIRCLE_WORKFLOW_ID
-
-            docker build -f Dockerfile -t $IMAGE_NAME .
-            docker build -f Dockerfile.arm64v8 -t $IMAGE_NAME_ARM .
-
-            docker push $IMAGE_NAME
-            docker push $IMAGE_NAME_ARM
+      - build-publish-docker-image:
+          pass: $DOCKER_PASS
+          user: $DOCKER_USER
+          registry: $DOCKER_REGISTRY
+          imageName: "homepage"
+          imageTag: v$CIRCLE_WORKFLOW_ID
+          imageTagArm: arm-v$CIRCLE_WORKFLOW_ID
 
   deploy-prod:
     machine: true
     steps:
-      - checkout
-
-      - kube-orb/install-kubeconfig:
-          kubeconfig: KUBECONFIG_DATA
-
-      - kube-orb/install-kubectl
-
-      - helm/install-helm-client:
-          version: v3.0.2
-
-      - run:
-          name: Add Helm repo
-          command: helm repo add stable https://kubernetes-charts.storage.googleapis.com/
-
-      - run:
-          name: Install Helm chart
-          command: |
-            IMAGE_VERSION=armv$CIRCLE_WORKFLOW_ID
-            HOSTNAME=tudorpopa.com
-            HOSTPATH=/
-            NAMESPACE=homepage-prod
-
-            helm upgrade homepage ./chart \
-              --set image.version=$IMAGE_VERSION \
-              --set ingress.hosts[0].host=$HOSTNAME \
-              --set ingress.hosts[0].paths[0]=$HOSTPATH \
-              --namespace $NAMESPACE \
-              --install
+      - deploy-app:
+          imageTag: "arm-v$CIRCLE_WORKFLOW_ID"
+          namespace: "homepage-prod"
+          hostname: "tudorpopa.com"
 
 workflows:
   version: 2
