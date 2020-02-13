@@ -81,6 +81,7 @@ commands:
               --set image.version=<< parameters.imageTag >> \
               --set ingress.hosts[0].host=<< parameters.hostname >> \
               --set ingress.hosts[0].paths[0]=<< parameters.hostpath >> \
+              --set ingress.annotations."kubernetes\.io\/ingress\.class"=traefik \
               --namespace << parameters.namespace >> \
               --install
 
