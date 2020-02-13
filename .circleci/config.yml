@@ -85,7 +85,7 @@ commands:
               --set ingress.letsencrypt.issuerName=<< parameters.letsencryptIssuer >> \
               --set ingress.hosts[0].host=<< parameters.hostname >> \
               --set ingress.hosts[0].paths[0]=<< parameters.hostpath >> \
-              --set ingress.tls.secretName=<< parameters.letsencryptIssuer >> \
+              --set ingress.tls[0].secretName=<< parameters.letsencryptIssuer >> \
               --set ingress.annotations."kubernetes\.io\/ingress\.class"=traefik \
               --namespace << parameters.namespace >> \
               --install
