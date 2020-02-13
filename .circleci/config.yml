@@ -100,7 +100,7 @@ jobs:
     machine: true
     steps:
       - deploy-app:
-          imageTag: "arm-staging-v$CIRCLE_WORKFLOW_ID"
+          imageTag: "staging-v$CIRCLE_WORKFLOW_ID"
           namespace: "homepage-staging"
 
   build-prod:
@@ -118,7 +118,7 @@ jobs:
     machine: true
     steps:
       - deploy-app:
-          imageTag: "arm-v$CIRCLE_WORKFLOW_ID"
+          imageTag: "v$CIRCLE_WORKFLOW_ID"
           namespace: "homepage-prod"
           hostname: "tudorpopa.com"
 
