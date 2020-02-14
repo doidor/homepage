@@ -86,7 +86,10 @@ commands:
               --set ingress.hosts[0].host=<< parameters.hostname >> \
               --set ingress.hosts[0].paths[0]=<< parameters.hostpath >> \
               --set ingress.tls[0].secretName=<< parameters.appName >>-tls \
+              --set ingress.tls[0].hosts[0]=<< parameters.hostname >> \
               --set ingress.annotations."kubernetes\.io\/ingress\.class"=traefik \
+              --set ingress.annotations."cert\-manager\.io\/clusterissuer"=<< parameters.letsencryptIssuer >> \
+              --set ingress.annotations."cert\-manager\.io\/acme-challenge-type"=http01 \
               --namespace << parameters.namespace >> \
               --install
 
