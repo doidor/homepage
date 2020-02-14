@@ -86,6 +86,8 @@ commands:
               --set ingress.hosts[0].paths[0]=<< parameters.hostpath >> \
               --set ingress.annotations."kubernetes\.io\/ingress\.class"=traefik \
               --set ingress.annotations."cert\-manager\.io\/cluster\-issuer"=<< parameters.letsencryptIssuer >> \
+              --set ingress.tls[0].secretName=<< parameters.appName >>-tls \
+              --set ingress.tls[0].hosts[0]=<< parameters.hostname >> \
               --namespace << parameters.namespace >> \
               --install
 
