@@ -49,8 +49,6 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
-  letsencrypt:
-    issuerName: ""
 
 resources:
   {}
