@@ -36,12 +36,10 @@ service:
   type: LoadBalancer
   port: 80
 
-ingress:  
+ingress:
   enabled: true
   annotations:
-    {
-      kubernetes.io/ingress.class: traefik
-    }
+    {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
@@ -51,7 +49,7 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
-  letsencrypt:    
+  letsencrypt:
     issuerName: ""
 
 resources:
