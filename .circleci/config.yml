@@ -89,7 +89,7 @@ commands:
               --set ingress.tls[0].hosts[0]=<< parameters.hostname >> \
               --set ingress.annotations."kubernetes\.io\/ingress\.class"=traefik \
               --set ingress.annotations."certmanager\.k8s\.io\/issuer:"=<< parameters.letsencryptIssuer >> \
-              --set ingress.annotations."certmanager\.k8s\.io\/acme-challenge-type"=http01 \
+              --set ingress.annotations."certmanager\.k8s\.io\/acme\-challenge\-type"=http01 \
               --namespace << parameters.namespace >> \
               --install
 
