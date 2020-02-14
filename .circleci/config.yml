@@ -49,7 +49,7 @@ commands:
         default: ""
       letsencryptIssuer:
         type: string
-        default: "letsencrypt-staging"
+        default: "letsencrypt-prod"
       hostname:
         type: string
         default: "arm.tudorpopa.com"

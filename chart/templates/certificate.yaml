@@ -5,7 +5,7 @@ kind: Certificate
 metadata:
   name: {{ $fullName }}
 spec:
-  secretName: {{ $fullName }}-tls  # this is the secret where the certificate is actually stored 
+  secretName: {{ $fullName }}-tls  # this is the secret where the certificate is actually stored
   dnsNames:
   {{- range .Values.ingress.hosts }}
     - {{ .host }}
@@ -19,6 +19,6 @@ spec:
           ingress: {{ $fullName }}
         domains:
         {{- range .Values.ingress.hosts }}
-          - {{ .host }}
+          - {{ .host | quote }}
         {{- end }}
 {{- end }}
