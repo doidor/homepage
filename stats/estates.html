@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html class="no-js" lang="">
+  <head>
+    <meta charset="utf-8" />
+    <title>Cluj-Napoca Real Estates Statistics</title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta name="theme-color" content="#fafafa" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css"
+    />
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+    <style type="text/css">
+      body > .ui.container {
+        margin-top: 3em;
+      }
+      iframe {
+        border: none;
+        width: calc(100% + 2em);
+        margin: 0em -1em;
+      }
+
+      .ui.container > h1 {
+        font-size: 3em;
+        text-align: center;
+        font-weight: normal;
+        margin: 4em 0em 2em;
+      }
+      .ui.container > h3.dividing.header {
+        font-size: 2em;
+        font-weight: normal;
+        margin: 3em 0em 1em;
+      }
+
+      .ui.table {
+        table-layout: fixed;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="ui container">
+      <h1 class="ui dividing header">Cluj-Napoca real estate statistics</h1>
+      <p>
+        This page contains visual representations of Cluj-Napoca's real estate
+        market. The data is fetched from the local major real estate websites.
+      </p>
+      <p>
+        The available sources (for now) are:
+        <ul class="ui list">
+            <li><a href="https://www.piata-az.ro/imobiliare/cluj-napoca">piata-az.ro</a></li>
+            <li><a href="https://www.blitz-imobiliare.ro/vanzari-apartamente-cluj">blitz.ro</a></li>
+        </ul>
+      </p>
+
+      <h3 class="ui dividing header">Price per day</h3>
+      <p>
+        X axis: the date when the information was parsed.
+      </p>
+      <p>
+        Y axis: the total real estate value for that day (for the parsed estates).
+      </p>
+      <iframe
+        style="background: #FFFFFF;border: none;border-radius: 2px;box-shadow: 0 2px 10px 0 rgba(70, 76, 79, .2);"
+        width="640"
+        height="480"
+        src="https://charts.mongodb.com/charts-project-0-beiak/embed/charts?id=0806e1fd-659f-47ca-a31b-a0a717dcba4c&autorefresh=86400&theme=light"
+      ></iframe>
+
+      <h3 class="ui dividing header">Price per neighborhood</h3>
+      <p>
+        X axis: the neighborhood id.
+        <i>NB:</i> -1 represents the estates that didn't have a neighborhood specified.
+      </p>
+      <p>
+        Y axis: the mean real estate value for a specific neighborhood.
+      </p>
+      <iframe
+        style="background: #FFFFFF;border: none;border-radius: 2px;box-shadow: 0 2px 10px 0 rgba(70, 76, 79, .2);"
+        width="640"
+        height="480"
+        src="https://charts.mongodb.com/charts-project-0-beiak/embed/charts?id=b7418eb4-1d61-48e0-8189-a7944b339659&autorefresh=86400&theme=light"
+      ></iframe>
+
+      <h3 class="ui dividing header">Price per square meter per neighborhood</h3>
+      <p>
+        X axis: the neighborhood id.
+        <i>NB:</i> -1 represents the estates that didn't have a neighborhood specified.
+      </p>
+      <p>
+        Y axis: the mean price per square meter per neighborhood.
+      </p>
+      <iframe
+        style="background: #FFFFFF;border: none;border-radius: 2px;box-shadow: 0 2px 10px 0 rgba(70, 76, 79, .2);"
+        width="640"
+        height="480"
+        src="https://charts.mongodb.com/charts-project-0-beiak/embed/charts?id=3f036dfb-90bc-4169-9332-a4b5873b9355&autorefresh=86400&theme=light"
+      ></iframe>
+
+      <h3 class="ui dividing header">Price per square meter related to number of rooms.</h3>
+      <p>
+        X axis: total rooms number.
+        <i>NB:</i> 0 represents the estates that didn't have a room number specified.
+      </p>
+      <p>
+        Y axis: the mean price per square meter related to number of rooms.
+      </p>
+      <iframe
+        style="background: #FFFFFF;border: none;border-radius: 2px;box-shadow: 0 2px 10px 0 rgba(70, 76, 79, .2);"
+        width="640"
+        height="480"
+        src="https://charts.mongodb.com/charts-project-0-beiak/embed/charts?id=7c453630-edb7-428c-9888-0b3b901d1512&autorefresh=86400&theme=light"
+      ></iframe>
+
+      <div class="ui  vertical footer segment">
+        <div class="ui center aligned container">
+          <div class="ui section divider"></div>
+          <div class="ui horizontal small divided link list">
+            <a class="item" href="https://tudorpopa.com/" target="_blank">&copy; Copyright 2020 Tudor Popa</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
