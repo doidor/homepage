@@ -41,6 +41,9 @@ commands:
   deploy-app:
     description: "A set of commands to deploy a new version of the app using Helm."
     parameters:
+      imageRepository:
+        type: string
+        default: "docker.io/doidorian/homepage"
       imageTag:
         type: string
         default: ""
@@ -81,6 +84,7 @@ commands:
           name: Deploy the image.
           command: |
             helm upgrade << parameters.appName >> ./chart \
+              --set image.repository=<< parameters.imageRepository >> \
               --set image.version=<< parameters.imageTag >> \
               --set ingress.hosts[0].host=<< parameters.hostname >> \
               --set ingress.hosts[0].paths[0]=<< parameters.hostpath >> \
@@ -107,6 +111,7 @@ jobs:
     machine: true
     steps:
       - deploy-app:
+          imageRepository: $DOCKER_IMAGE_REPOSITORY
           imageTag: "staging-v$CIRCLE_WORKFLOW_ID"
           namespace: "homepage-staging"
 
@@ -125,6 +130,7 @@ jobs:
     machine: true
     steps:
       - deploy-app:
+          imageRepository: $DOCKER_IMAGE_REPOSITORY
           imageTag: "v$CIRCLE_WORKFLOW_ID"
           namespace: "homepage-prod"
           hostname: "tudorpopa.com"
