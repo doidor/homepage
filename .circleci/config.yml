@@ -1,31 +1,75 @@
 version: 2.1
-jobs:
-  build:
-    machine: true
+commands:
+  build-publish-docker-image:
+    description: "A set of commands to build and publish a Docker image to a specific Docker repo."
+    parameters:
+      pass:
+        type: string
+        default: ""
+      user:
+        type: string
+        default: ""
+      registry:
+        type: string
+        default: ""
+      imageName:
+        type: string
+        default: "homepage"
+      imageTag:
+        type: string
+        default: ""
+      imageTagArm:
+        type: string
+        default: ""
     steps:
       - checkout
-           
+
       - run:
           name: Build and push Docker images.
           command: |
-            echo $DOCKER_PASS | docker login $DOCKER_REGISTRY -u $DOCKER_USER --password-stdin
+            echo << parameters.pass >> | docker login << parameters.registry >> -u << parameters.user >> --password-stdin
 
-            IMAGE_NAME=$DOCKER_REGISTRY/$DOCKER_USER/homepage:v$CIRCLE_BUILD_NUM
-            IMAGE_NAME_ARM=$DOCKER_REGISTRY/$DOCKER_USER/homepage:armv$CIRCLE_BUILD_NUM
+            IMAGE_NAME=<< parameters.registry >>/<< parameters.user >>/<< parameters.imageName >>:<< parameters.imageTag >>
+            IMAGE_NAME_ARM=<< parameters.registry >>/<< parameters.user >>/<< parameters.imageName >>:<< parameters.imageTagArm >>
 
             docker build -f Dockerfile -t $IMAGE_NAME .
-            docker build -f Dockerfile.arm64v8 -t $IMAGE_NAME_ARM .            
+            docker build -f Dockerfile.arm64v8 -t $IMAGE_NAME_ARM .
 
             docker push $IMAGE_NAME
             docker push $IMAGE_NAME_ARM
-  
-  deploy:
-    machine: true
+
+  deploy-app:
+    description: "A set of commands to deploy a new version of the app using Helm."
+    parameters:
+      imageRepository:
+        type: string
+        default: "docker.io/doidorian/homepage"
+      imageTag:
+        type: string
+        default: ""
+      namespace:
+        type: string
+        default: ""
+      letsencryptIssuer:
+        type: string
+        default: "letsencrypt-prod"
+      hostname:
+        type: string
+        default: "arm.tudorpopa.com"
+      hostpath:
+        type: string
+        default: "/"
+      appName:
+        type: string
+        default: "homepage"
+      kubeconfigData:
+        type: string
+        default: "KUBECONFIG_DATA"
     steps:
       - checkout
 
       - kube-orb/install-kubeconfig:
-          kubeconfig: KUBECONFIG_DATA
+          kubeconfig: << parameters.kubeconfigData >>
 
       - kube-orb/install-kubectl
 
@@ -37,22 +81,89 @@ jobs:
           command: helm repo add stable https://kubernetes-charts.storage.googleapis.com/
 
       - run:
-          name: Install Helm chart
-          command: helm upgrade homepage ./chart --set image.version=armv$CIRCLE_BUILD_NUM --install
+          name: Deploy the image.
+          command: |
+            helm upgrade << parameters.appName >> ./chart \
+              --set image.repository=<< parameters.imageRepository >> \
+              --set image.version=<< parameters.imageTag >> \
+              --set ingress.hosts[0].host=<< parameters.hostname >> \
+              --set ingress.hosts[0].paths[0]=<< parameters.hostpath >> \
+              --set ingress.annotations."kubernetes\.io\/ingress\.class"=traefik \
+              --set ingress.annotations."cert\-manager\.io\/cluster\-issuer"=<< parameters.letsencryptIssuer >> \
+              --set ingress.tls[0].secretName=<< parameters.appName >>-tls \
+              --set ingress.tls[0].hosts[0]=<< parameters.hostname >> \
+              --namespace << parameters.namespace >> \
+              --install
+
+jobs:
+  build-staging:
+    machine: true
+    steps:
+      - build-publish-docker-image:
+          pass: $DOCKER_PASS
+          user: $DOCKER_USER
+          registry: $DOCKER_REGISTRY
+          imageName: "homepage"
+          imageTag: staging-v$CIRCLE_WORKFLOW_ID
+          imageTagArm: arm-staging-v$CIRCLE_WORKFLOW_ID
+
+  deploy-staging:
+    machine: true
+    steps:
+      - deploy-app:
+          imageRepository: $DOCKER_IMAGE_REPOSITORY
+          imageTag: "staging-v$CIRCLE_WORKFLOW_ID"
+          namespace: "homepage-staging"
+
+  build-prod:
+    machine: true
+    steps:
+      - build-publish-docker-image:
+          pass: $DOCKER_PASS
+          user: $DOCKER_USER
+          registry: $DOCKER_REGISTRY
+          imageName: "homepage"
+          imageTag: v$CIRCLE_WORKFLOW_ID
+          imageTagArm: arm-v$CIRCLE_WORKFLOW_ID
+
+  deploy-prod:
+    machine: true
+    steps:
+      - deploy-app:
+          imageRepository: $DOCKER_IMAGE_REPOSITORY
+          imageTag: "v$CIRCLE_WORKFLOW_ID"
+          namespace: "homepage-prod"
+          hostname: "tudorpopa.com"
 
 workflows:
   version: 2
+  build-staging-and-deploy:
+    jobs:
+      - build-staging:
+          filters:
+            branches:
+              ignore:
+                - master
+
+      - deploy-staging:
+          requires:
+            - build-staging
+          filters:
+            branches:
+              ignore:
+                - master
+
   build-production-and-deploy:
     jobs:
-      - build:
+      - build-prod:
           filters:
             branches:
               only:
                 - master
 
-      - deploy:
-          requires: 
-            - build
+      - deploy-prod:
+          requires:
+            - build-prod
           filters:
             branches:
               only:
