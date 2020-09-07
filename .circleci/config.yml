@@ -52,7 +52,7 @@ commands:
         default: ""
       letsencryptIssuer:
         type: string
-        default: "letsencrypt-prod"
+        default: "letsencrypt"
       hostname:
         type: string
         default: "arm.tudorpopa.com"
