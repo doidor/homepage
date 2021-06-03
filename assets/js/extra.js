@@ -27,3 +27,27 @@ function consoleMessage() {
   console.log("");
   console.log("%cCheers!", style.normal);
 }
+
+function _marphaTranlsate(input) {
+  let ret = input
+    .replace(/stii/ig, "shtee")
+    .replace(/(^|\s)+si(\s|$)+/ig, "$1shi$2")
+    .replace(/si/ig, "sh")
+    .replace(/ii|i/ig, "ee")
+    .replace(/ș/ig, "sh")
+    .replace(/ț/ig, "tz")
+    .replace(/astea/ig, "ăștia")
+    .replace(/st/ig, "sht");
+
+  return ret;
+}
+
+function enableMarphaTranslator() {
+  const input = document.querySelector("#input");
+  const output = document.querySelector("#output");
+
+  input.addEventListener("input", function () {
+    const translation = _marphaTranlsate(this.value);
+    output.value = translation;
+  });
+}
