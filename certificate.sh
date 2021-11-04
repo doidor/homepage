@@ -27,7 +27,7 @@ done
 
 cat << EOF | kubectl apply -f -
 ---
-apiVersion: cert-manager.io/v1alpha2
+apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
   name: letsencrypt
@@ -47,7 +47,7 @@ spec:
         ingress:
           class: traefik
 ---
-apiVersion: cert-manager.io/v1alpha2
+apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: ${DOMAIN}-cert
